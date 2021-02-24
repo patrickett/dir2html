@@ -1,9 +1,9 @@
 #![allow(warnings)]
 use json::{array, object, JsonValue};
 use serde::{Deserialize, Serialize};
-use std::io::Error;
 use std::thread;
 use std::{env, fs};
+use std::{io::Error, time::SystemTime};
 
 fn main() {
     let s = String::from(".");
@@ -23,10 +23,25 @@ struct Dirent {
     r#type: String,
     path: String,
     children: Option<Vec<Dirent>>,
+    meta: DirentMeta,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct DirentMeta {
+    size: u64,
+    modified: SystemTime,
+    created: SystemTime,
 }
 
 fn struct_tree(root: String) -> Result<Dirent, Error> {
     let metadata = fs::metadata(&root)?;
+
+    let meta = DirentMeta {
+        size: metadata.len(),
+        created: metadata.created().unwrap_or(SystemTime::UNIX_EPOCH),
+        modified: metadata.modified().unwrap_or(SystemTime::UNIX_EPOCH),
+    };
+
     if metadata.is_dir() {
         let mut children_vec = Vec::new();
         for entry in fs::read_dir(&root)? {
@@ -39,6 +54,7 @@ fn struct_tree(root: String) -> Result<Dirent, Error> {
             path: root.to_owned(),
             r#type: "folder".to_owned(),
             children: Some(children_vec),
+            meta,
         };
         Ok(folder)
     } else {
@@ -46,6 +62,7 @@ fn struct_tree(root: String) -> Result<Dirent, Error> {
             path: root.to_owned(),
             r#type: "file".to_owned(),
             children: None,
+            meta,
         };
         Ok(file)
     }
