@@ -56,6 +56,44 @@ fn struct_tree(root: String) -> Result<Dirent, Error> {
 
     if metadata.is_dir() {
         let mut children_vec = Vec::new();
+        let mut handle_vec = Vec::new();
+        for entry in fs::read_dir(&root)? {
+            let dir_entry = entry?;
+            let path = String::from(dir_entry.path().to_str().unwrap_or(""));
+            let handle = thread::spawn(move || struct_tree(path).unwrap());
+            // let child = struct_tree(path)?;
+            handle_vec.push(handle)
+        }
+        dirent.r#type = String::from("dir");
+        for handle in handle_vec {
+            let x = handle.join().unwrap();
+            children_vec.push(x)
+        }
+        dirent.children = Some(children_vec);
+        Ok(dirent)
+    } else {
+        dirent.r#type = String::from("file");
+        Ok(dirent)
+    }
+}
+
+fn single_thread_struct_tree(root: String) -> Result<Dirent, Error> {
+    let metadata = fs::metadata(&root)?;
+
+    let mut dirent = Dirent {
+        r#type: "folder".to_owned(),
+        filename: String::from(Path::new(&root).file_name().unwrap().to_str().unwrap_or("")),
+        path: root.to_owned(),
+        meta: DirentMeta {
+            size: metadata.len(),
+            created: metadata.created().unwrap_or(SystemTime::UNIX_EPOCH),
+            modified: metadata.modified().unwrap_or(SystemTime::UNIX_EPOCH),
+        },
+        children: None,
+    };
+
+    if metadata.is_dir() {
+        let mut children_vec = Vec::new();
         for entry in fs::read_dir(&root)? {
             let dir_entry = entry?;
             let path = String::from(dir_entry.path().to_str().unwrap_or(""));
