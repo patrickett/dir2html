@@ -42,39 +42,32 @@ struct DirentMeta {
 fn struct_tree(root: String) -> Result<Dirent, Error> {
     let metadata = fs::metadata(&root)?;
 
-    let filename = String::from(Path::new(&root).file_name().unwrap().to_str().unwrap_or(""));
-
-    let meta = DirentMeta {
-        size: metadata.len(),
-        created: metadata.created().unwrap_or(SystemTime::UNIX_EPOCH),
-        modified: metadata.modified().unwrap_or(SystemTime::UNIX_EPOCH),
+    let mut dirent = Dirent {
+        r#type: "folder".to_owned(),
+        filename: String::from(Path::new(&root).file_name().unwrap().to_str().unwrap_or("")),
+        path: root.to_owned(),
+        meta: DirentMeta {
+            size: metadata.len(),
+            created: metadata.created().unwrap_or(SystemTime::UNIX_EPOCH),
+            modified: metadata.modified().unwrap_or(SystemTime::UNIX_EPOCH),
+        },
+        children: None,
     };
 
     if metadata.is_dir() {
         let mut children_vec = Vec::new();
         for entry in fs::read_dir(&root)? {
             let dir_entry = entry?;
-            let path = String::from(dir_entry.path().to_str().unwrap());
+            let path = String::from(dir_entry.path().to_str().unwrap_or(""));
             let child = struct_tree(path)?;
             children_vec.push(child)
         }
-        let folder = Dirent {
-            r#type: "folder".to_owned(),
-            filename,
-            path: root.to_owned(),
-            meta,
-            children: Some(children_vec),
-        };
-        Ok(folder)
+        dirent.r#type = String::from("dir");
+        dirent.children = Some(children_vec);
+        Ok(dirent)
     } else {
-        let file = Dirent {
-            r#type: "file".to_owned(),
-            filename,
-            path: root.to_owned(),
-            meta,
-            children: None,
-        };
-        Ok(file)
+        dirent.r#type = String::from("file");
+        Ok(dirent)
     }
 }
 
