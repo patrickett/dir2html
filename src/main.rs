@@ -1,12 +1,12 @@
 #![allow(warnings)]
 use json::{array, object, JsonValue};
 use serde::{Deserialize, Serialize};
-use std::thread;
 use std::{env, fs};
 use std::{io::Error, time::SystemTime};
+use std::{path::Path, thread};
 
 fn main() {
-    let s = String::from(".");
+    let s = String::from("./target");
     let a = struct_tree(s).unwrap();
     let f = serde_json::to_string_pretty(&a).unwrap();
     println!("{}", f)
@@ -18,12 +18,18 @@ fn main() {
     // };
 }
 
+struct OperationMeta {
+    files: u64,
+    folders: u64,
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct Dirent {
     r#type: String,
+    filename: String,
     path: String,
-    children: Option<Vec<Dirent>>,
     meta: DirentMeta,
+    children: Option<Vec<Dirent>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -35,6 +41,8 @@ struct DirentMeta {
 
 fn struct_tree(root: String) -> Result<Dirent, Error> {
     let metadata = fs::metadata(&root)?;
+
+    let filename = String::from(Path::new(&root).file_name().unwrap().to_str().unwrap_or(""));
 
     let meta = DirentMeta {
         size: metadata.len(),
@@ -51,18 +59,20 @@ fn struct_tree(root: String) -> Result<Dirent, Error> {
             children_vec.push(child)
         }
         let folder = Dirent {
-            path: root.to_owned(),
             r#type: "folder".to_owned(),
-            children: Some(children_vec),
+            filename,
+            path: root.to_owned(),
             meta,
+            children: Some(children_vec),
         };
         Ok(folder)
     } else {
         let file = Dirent {
-            path: root.to_owned(),
             r#type: "file".to_owned(),
-            children: None,
+            filename,
+            path: root.to_owned(),
             meta,
+            children: None,
         };
         Ok(file)
     }
