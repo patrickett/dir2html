@@ -12,6 +12,14 @@ code {
     monospace;
 }
 
+.overflowHidden {
+  overflow: hidden;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
 .info {
   display: flex;
   justify-content: space-between;
@@ -23,13 +31,31 @@ code {
   flex-direction: column;
 }
 
-.mx-auto {
+.search {
+  display: flex;
+  flex-direction: column;
+}
+
+.iconText {
+  display: flex;
+  flex-direction: row;
+  align-items: center !important;
+  line-height: 1em;
+}
+
+.themeIcon {
+  margin-top: 1em;
+  margin-right: 1em;
+  text-align: right;
+}
+
+
+.mxAuto {
   margin-left: auto;
   margin-right: auto;
 }
 
 .container {
-  /* width: 100%;  */
   padding-left: 1em;
   padding-right: 1em;
 }
@@ -62,25 +88,36 @@ code {
   margin-right: 3px;
 }
 
-.text-center {
+.ml5 {
+  margin-left: 5px;
+}
+
+.textCenter {
   text-align: center;
 }
 
-.handle-bar {
-  width: auto !important  ;
-  min-width: auto !important;
-  height: auto !important;
-  margin-left: 10px;
-  margin-right: 10px;
+.treeView {
+  height: 85vh;
+  overflow: auto;
+
 }
 
-.h-full {
-  height: 100%;
+tbody {
+  display: block;
+  height: 80vh;
+  overflow: auto;
 }
-div#root {
-  height: 100%;
+thead, tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;/* even columns width , fix width of table too*/
 }
+
 body {
-  height: 100vh;
-  overflow: hidden
+  height: 100%;
+  overflow: auto;
+}
+html {
+  height: 100%;
+  overflow: hidden;
 }
