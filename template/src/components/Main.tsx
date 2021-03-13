@@ -1,15 +1,15 @@
 import React from "react";
 // import { Divider, Input } from "@geist-ui/react";
-import "../css/index.css";
+// import styles from "../css/index.module.css";
 import DirListing from "./DirListing";
 import TreeView from "./TreeView";
-
+import { FileList } from "../App";
 import Splitter from "m-react-splitters";
 // import "m-react-splitters/lib/splitters.css";
 
-export default function Main() {
+export default function Main({ data }: { data: FileList }) {
   return (
-    <div className="h-full">
+    <div>
       <Splitter
         position="vertical"
         primaryPaneMinHeight={0}
@@ -17,8 +17,8 @@ export default function Main() {
         primaryPaneMinWidth="0%"
         dispatchResize={true}
       >
-        <TreeView />
-        <DirListing />
+        <TreeView data={data} />
+        <DirListing data={data} />
       </Splitter>
     </div>
   );
