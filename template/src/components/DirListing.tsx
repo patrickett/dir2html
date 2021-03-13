@@ -1,38 +1,55 @@
 import React from "react";
 import { Table, Link } from "@geist-ui/react";
-import "../css/index.css";
+import File from "@geist-ui/react-icons/file";
+import Folder from "@geist-ui/react-icons/folder";
+import styles from "../css/index.module.css";
+import { DirentJson, FileList } from "../App";
+import filesize from "filesize";
 
-export default function DirListing() {
-  const data = [
-    {
-      name: (
-        <Link color underline>
-          components/
+export default function DirListing({ data }: { data: FileList }) {
+  let tableData = data.root.children!.map((child: any) => {
+    if (child.type === "dir") {
+      child.name1 = (
+        <Link
+          color
+          underline
+          className={styles.iconText}
+          href={`${window.location}/${child.name}`}
+        >
+          <Folder className={styles.m1} size={20} />
+          {child.name}
         </Link>
-      ),
-      path: "C://Users/pat/components",
-      size: "10.2MB",
-      modified: "-",
-    },
-    {
-      name: "package.json",
-      path: "C://Users/pat/package.json",
-      size: "12kb",
-      modified: "2017-04-18",
-    },
-    {
-      name: "readme.md",
-      path: "C://Users/pat/readme.md",
-      size: "34.4kb",
-      modified: "2017-04-18",
-    },
-  ];
+      );
+    } else {
+      child.name1 = (
+        <div className={styles.iconText}>
+          <File className={styles.m1} size={20} />
+          <p>{child.name}</p>
+        </div>
+      );
+    }
 
+    child.modified = new Date(child.modified).toLocaleDateString();
+    child.size1 = filesize(child.size);
+    return child;
+  });
+  const sorted: DirentJson[] = tableData.sort((a, b) => {
+    let fa = a.type,
+      fb = b.type;
+
+    if (fa < fb) {
+      return -1;
+    }
+    if (fa > fb) {
+      return 1;
+    }
+    return 0;
+  });
   return (
     <div>
-      <Table data={data}>
-        <Table.Column prop="name" label="name" />
-        <Table.Column prop="size" label="size" />
+      <Table data={sorted}>
+        <Table.Column prop="name1" label="name" />
+        <Table.Column prop="size1" label="size" />
         <Table.Column prop="modified" label="modified" />
         <Table.Column prop="path" label="path" />
       </Table>
