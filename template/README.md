@@ -1,30 +1,33 @@
-# Getting Started with dir2html template
+# cra-template-tailwind-ts
 
-This project has a custom build process that will inline all css and javascript so the final build can be run from a single html file.
+This is a **starter template for a React.js project**, configured with **Create-React-App**, **Tailwind** and **Typescript**.
 
-## Available Scripts
+### Setup 📦
 
-In the project directory, you can run:
+```
+npx create-react-app <YOUR_APP_NAME> --template tailwind-ts
+```
 
-### `yarn start`
+### Configuring tailwind ⚙️
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The `tailwind.css` file *(at project root)* is used as source css for Tailwind. Use that to make changes to the generated-on-fly `index.css` *(in src/styles/)*. This generated file is used in the project.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Also, `tailwind-config-full.js` exists as a reference should you need to modify `tailwind.config.js`.
 
-### `yarn test`
+### Development 👨‍💻
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Starts `tailwindcss` in jit mode and the local React dev server.
+```
+yarn dev
+```
 
-### `yarn build`
+### Building 🚀
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Build project**:
+    ```
+    yarn build
+    ```
+- **Build only CSS**:
+    ```
+    yarn build:css
+    ```

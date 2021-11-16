@@ -4,17 +4,8 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.12.3",
-    "@geist-ui/react": "^2.1.3",
-    "@geist-ui/react-icons": "^1.0.1",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@svgr/webpack": "5.5.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.5.0",
     "babel-eslint": "^10.1.0",
@@ -39,8 +30,8 @@
     "eslint-plugin-testing-library": "^3.9.2",
     "eslint-webpack-plugin": "^2.5.2",
     "file-loader": "6.1.1",
-    "filesize": "^6.1.0",
     "fs-extra": "^9.0.1",
+    "history": "5",
     "html-webpack-inline-source-plugin": "1.0.0-beta.2",
     "html-webpack-plugin": "4.0.0-beta.4",
     "identity-obj-proxy": "3.0.0",
@@ -48,7 +39,6 @@
     "jest-circus": "26.6.0",
     "jest-resolve": "26.6.0",
     "jest-watch-typeahead": "0.6.1",
-    "m-react-splitters": "^1.2.0",
     "mini-css-extract-plugin": "0.11.3",
     "optimize-css-assets-webpack-plugin": "5.0.4",
     "pnp-webpack-plugin": "1.6.4",
@@ -58,11 +48,14 @@
     "postcss-preset-env": "6.7.0",
     "postcss-safe-parser": "5.0.2",
     "prompts": "2.4.0",
-    "react": "^17.0.1",
+    "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
     "react-dev-utils": "^11.0.3",
-    "react-dom": "^17.0.1",
+    "react-dom": "^17.0.2",
+    "react-helmet-async": "^1.1.2",
+    "react-modal": "^3.14.4",
     "react-refresh": "^0.8.3",
+    "react-router-dom": "6",
     "resolve": "1.18.1",
     "resolve-url-loader": "^3.1.2",
     "sass-loader": "^10.0.5",
@@ -70,24 +63,23 @@
     "style-loader": "1.3.0",
     "terser-webpack-plugin": "4.2.3",
     "ts-pnp": "1.2.0",
-    "typescript": "^4.1.2",
     "url-loader": "4.1.1",
-    "web-vitals": "^1.0.1",
     "webpack": "4.44.2",
     "webpack-dev-server": "3.11.1",
     "webpack-manifest-plugin": "2.2.0",
     "workbox-webpack-plugin": "5.1.4"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "start": "concurrently -k \"node scripts/start.js\" \"yarn dev:css\"",
+    "build": "yarn build:css && node scripts/build.js",
+    "test": "node scripts/test.js",
+    "dev": "yarn start",
+    "build:css": "npx tailwindcss --input ./tailwind.css --output ./src/styles/index.css",
+    "dev:css": "npx tailwindcss --input ./tailwind.css --output ./src/styles/index.css -w",
+    "serve": "npx serve -s build/"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -101,6 +93,18 @@
       "last 1 safari version"
     ]
   },
+  "devDependencies": {
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-modal": "^3.13.1",
+    "autoprefixer": "^10.4.0",
+    "concurrently": "^6.3.0",
+    "postcss": "8",
+    "serve": "^13.0.2",
+    "tailwindcss": "^2.2.19",
+    "typescript": "^4.1.2"
+  },
   "jest": {
     "roots": [
       "<rootDir>/src"
@@ -112,15 +116,13 @@
     "setupFiles": [
       "react-app-polyfill/jsdom"
     ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setupTests.ts"
-    ],
+    "setupFilesAfterEnv": [],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
       "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
     ],
     "testEnvironment": "jsdom",
-    "testRunner": "/home/netrunner/git-dev/projects/template/node_modules/jest-circus/runner.js",
+    "testRunner": "/home/netrunner/projects/template/node_modules/jest-circus/runner.js",
     "transform": {
       "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/config/jest/babelTransform.js",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
@@ -157,6 +159,5 @@
     "presets": [
       "react-app"
     ]
-  },
-  "devDependencies": {}
+  }
 }

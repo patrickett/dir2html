@@ -1,43 +1,84 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./css/global.css";
+import "./styles/index.css";
 import App from "./App";
-// import reportWebVitals from "./reportWebVitals";
-import { GeistProvider, CssBaseline } from "@geist-ui/react";
-import { useState, useEffect } from "react";
+import { BrowserRouter } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import { DirectoryEntry } from "../types/filelist";
 
-function Application() {
-  const [theme, setThemeType] = useState("light");
-  const switchThemes = () => {
-    setThemeType((last) => (last === "dark" ? "light" : "dark"));
-  };
-  // import and useEffect for setting document title for page
-  useEffect(() => {
-    const theme = window.localStorage.getItem("theme");
-    if (theme !== "dark") return;
-    setThemeType("dark");
-  }, []);
+const list: DirectoryEntry = {
+  name: "root",
+  file: 0,
+  children: [
+    {
+      name: "node_modules",
+      file: 0,
+      children: [
+        {
+          name: "electron",
+          file: 0,
+          children: [
+            {
+              name: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              file: 0,
+              children: [
+                { children: null, file: 1, name: "simple file" },
+                {
+                  children: null,
+                  file: 1,
+                  name: "asdasdasasqwe12312ddddddddddddddddddddddddddddddddd",
+                },
+              ],
+            },
+            {
+              name: "another file",
+              file: 1,
+              children: [{ children: null, file: 1, name: "Another file" }],
+            },
+          ],
+        },
+        {
+          name: "another file",
+          file: 1,
+          children: null,
+        },
+        {
+          name: "index.ts",
+          file: 1,
+          children: null,
+        },
+      ],
+    },
+    {
+      name: "asd",
+      file: 1,
+      children: null,
+    },
+    {
+      name: "another file",
+      file: 1,
+      children: null,
+    },
+    {
+      name: "index.ts",
+      file: 1,
+      children: null,
+    },
+  ],
+};
 
-  let themeObj = {
-    toggle: switchThemes,
-    current: theme,
-  };
-
-  return (
-    <div>
-      <GeistProvider themeType={theme}>
-        <React.StrictMode>
-          <CssBaseline />
-          <App theme={themeObj} />
-        </React.StrictMode>
-      </GeistProvider>
-    </div>
-  );
-}
-
-ReactDOM.render(<Application />, document.getElementById("root"));
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
+ReactDOM.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <HelmetProvider>
+        <Helmet>
+          <script type="application/ld+json" id="filelist">
+            {JSON.stringify(list)}
+          </script>
+        </Helmet>
+      </HelmetProvider>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
